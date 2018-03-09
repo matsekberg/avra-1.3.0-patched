@@ -1,4 +1,5 @@
 
+
 I have added support for LAT, LAS and LAC mnemonics.
 This is a patched version 1.3.0 of AVRA assembler for the Atmel AVR microcontroller family. It fixes a crash on MacOSX 10.xx (**Abort trap: 6**), and some compilation warnings.
 
