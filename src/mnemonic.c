@@ -143,6 +143,7 @@ enum {
 	MNEMONIC_IN,       // Rd, P    1011 0PPd dddd PPPP
 	MNEMONIC_OUT,      // P, Rr    1011 1PPr rrrr PPPP
 	MNEMONIC_SBIC,     // P, b     1001 1001 PPPP Pbbb
+
 	MNEMONIC_SBIS,     // P, b     1001 1011 PPPP Pbbb
 	MNEMONIC_SBI,      // P, b     1001 1010 PPPP Pbbb
 	MNEMONIC_CBI,      // P, b     1001 1000 PPPP Pbbb
@@ -150,8 +151,7 @@ enum {
 	MNEMONIC_STS,      // k, Rr    1001 001d dddd 0000 + 16k
 	MNEMONIC_LD,       // Rd, __   dummy
 	MNEMONIC_ST,       // __, Rr   dummy
-	MNEMONIC_LDD,      // Rd, _+q  dummy
-	MNEMONIC_STD,      // _+q, Rr  dummy
+	MNEMONIC_LDD,      // Rd, _+q  dummy	MNEMONIC_STD,      // _+q, Rr  dummy
 	MNEMONIC_COUNT,
 	MNEMONIC_LPM_Z,    // Rd, Z    1001 000d dddd 0100
 	MNEMONIC_LPM_ZP,   // Rd, Z+   1001 000d dddd 0101
@@ -163,7 +163,7 @@ enum {
 	MNEMONIC_LD_Y,     // Rd, Y    1000 000d dddd 1000
 	MNEMONIC_LD_YP,    // Rd, Y+   1001 000d dddd 1001
 	MNEMONIC_LD_MY,    // Rd, -Y   1001 000d dddd 1010
-	MNEMONIC_LD_Z,     // Rd, Z    1000 000d dddd 0000
+ 	MNEMONIC_LD_Z,     // Rd, Z    1000 000d dddd 0000
 	MNEMONIC_LD_ZP,    // Rd, Z+   1001 000d dddd 0001
 	MNEMONIC_LD_MZ,    // Rd, -Z   1001 000d dddd 0010
 	MNEMONIC_ST_X,     // X, Rr    1001 001d dddd 1100
@@ -179,6 +179,9 @@ enum {
 	MNEMONIC_LDD_Z,    // Rd, Z+q  10q0 qq0d dddd 0qqq
 	MNEMONIC_STD_Y,    // Y+q, Rr  10q0 qq1r rrrr 1qqq
 	MNEMONIC_STD_Z,    // Z+q, Rr  10q0 qq1r rrrr 0qqq
+        MNEMONIC_LAS,      // Rd       1001 000d dddd 0101
+        MNEMONIC_LACS,      // Rd       1001 000d dddd 0101
+        MNEMONIC_LAS,      // Rd       1001 000d dddd 0101
 	MNEMONIC_END
 };
 
@@ -366,14 +369,16 @@ int parse_mnemonic(struct prog_info *pi)
   if(pi->pass == PASS_2) {
 	if(mnemonic <= MNEMONIC_BREAK) {
 		if(operand1) {
-			print_msg(pi, MSGTYPE_WARNING, "Garbage after instruction %s: %s", instruction_list[mnemonic].mnemonic, operand1);		}
+			print_msg(pi, MSGTYPE_WARNING, "Garbage after instruction %s: %s", instruction_list[mnemonic].mnemonic, operand1);
+		}
 		opcode = 0;			// No operand
 	} else if(mnemonic <= MNEMONIC_ELPM) {
 		if(operand1) {
 			operand2 = get_next_token(operand1, TERM_COMMA);
 			if(!operand2) {
 				print_msg(pi, MSGTYPE_ERROR, "%s needs a second operand", instruction_list[mnemonic].mnemonic);
-				return(True);			}
+				return(True);
+			}
 			get_next_token(operand2, TERM_END);
 			i = get_register(pi, operand1);
 			opcode = i << 4;
